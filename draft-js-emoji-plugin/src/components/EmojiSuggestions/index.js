@@ -75,12 +75,12 @@ export default class EmojiSuggestions extends Component {
     const offsetDetails = searches.map((offsetKey) => decodeOffsetKey(offsetKey));
 
     // a leave can be empty when it is removed due e.g. using backspace
-    const leaves = offsetDetails.map(({ blockKey, decoratorKey, leafKey }) => (
-      editorState
-        .getBlockTree(blockKey)
-        .getIn([decoratorKey, 'leaves', leafKey])
-    ));
-
+    const leaves = offsetDetails.map(({ blockKey, decoratorKey, leafKey }) => {
+      const blockTree = editorState
+      .getBlockTree(blockKey);      
+      return blockTree ? blockTree.getIn([decoratorKey, 'leaves', leafKey]) || [];
+    }
+      
     // if all leaves are undefined the popover should be removed
     if (leaves.every((leave) => leave === undefined)) {
       return removeList();
